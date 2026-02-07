@@ -3,90 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veo Kanban Dashboard</title>
+    <title>Veo Kanban Pro 💫</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .column { min-height: 200px; }
-        .card { cursor: grab; }
+        .column { min-height: 500px; }
+        .card { cursor: grab; transition: all 0.2s; }
         .card:active { cursor: grabbing; }
+        .card:hover { transform: translateY(-2px); border-color: #60a5fa; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 50; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
-    <header class="mb-8 flex justify-between items-center">
-        <h1 class="text-2xl font-bold tracking-tight">Veo Kanban 💫</h1>
-        <button id="addTask" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold transition-all">
-            + New Task
-        </button>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans">
+    <header class="p-6 border-b border-slate-800 flex justify-between items-center sticky top-0 bg-slate-950/80 backdrop-blur-md z-40">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight flex items-center gap-2">Veo Kanban 💫</h1>
+            <p class="text-xs text-slate-500 uppercase tracking-widest mt-1">Business Operating System</p>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-lg shadow-blue-600/20">
+                + New Task
+            </button>
+        </div>
     </header>
 
-    <main class="flex flex-col md:flex-row gap-6 overflow-x-auto pb-8">
+    <main class="p-6 flex flex-col md:flex-row gap-6 overflow-x-auto">
         <!-- To Do -->
-        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
-                To Do
-            </h2>
-            <div id="todo" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-2">
-                    <p class="text-sm font-bold">Standardize Auth Profile Management</p>
-                    <div class="mt-2 text-xs text-slate-400">Technical Debt</div>
-                </div>
+        <div class="flex-1 min-w-[320px]">
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h2 class="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-yellow-500"></span> To Do
+                </h2>
+                <span id="todo-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-slate-500">0</span>
             </div>
+            <div id="todo" class="column space-y-4 rounded-xl border-2 border-dashed border-slate-800 p-2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
 
         <!-- In Progress -->
-        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-                In Progress
-            </h2>
-            <div id="inprogress" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-3">
-                    <p class="text-sm font-bold">Configure Sub-Agent Delegation</p>
-                    <div class="mt-2 text-xs text-purple-400">Next Priority</div>
-                </div>
+        <div class="flex-1 min-w-[320px]">
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h2 class="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span> In Progress
+                </h2>
+                <span id="inprogress-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-slate-500">0</span>
             </div>
+            <div id="inprogress" class="column space-y-4 rounded-xl border-2 border-dashed border-slate-800 p-2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
 
         <!-- Done -->
-        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                Done
-            </h2>
-            <div id="done" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-0">
-                    <p class="text-sm">Initialize Kanban Dashboard</p>
-                    <div class="mt-2 text-xs text-slate-400">Done</div>
-                </div>
-                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-1">
-                    <p class="text-sm font-bold">Build VeoClaw Landing Page</p>
-                    <div class="mt-2 text-xs text-emerald-400">Live - Draft 1</div>
-                </div>
+        <div class="flex-1 min-w-[320px]">
+            <div class="flex items-center justify-between mb-4 px-2">
+                <h2 class="font-bold flex items-center gap-2 uppercase text-xs tracking-widest text-slate-400">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Done
+                </h2>
+                <span id="done-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full text-slate-500">0</span>
             </div>
+            <div id="done" class="column space-y-4 rounded-xl border-2 border-dashed border-slate-800 p-2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
         </div>
     </main>
 
+    <!-- Modal for adding/editing -->
+    <div id="taskModal" class="modal px-4">
+        <div class="bg-slate-900 w-full max-w-lg rounded-2xl p-8 border border-slate-700 shadow-2xl">
+            <h3 id="modalTitle" class="text-xl font-bold mb-6">Create New Task</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Title</label>
+                    <input type="text" id="taskTitle" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Description</label>
+                    <textarea id="taskDesc" rows="4" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                <div class="flex gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Priority</label>
+                        <select id="taskPriority" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 outline-none">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-8">
+                <button onclick="closeModal()" class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancel</button>
+                <button id="saveBtn" onclick="saveTask()" class="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-bold transition-all">Save Task</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function allowDrop(ev) {
-            ev.preventDefault();
+        let tasks = [];
+        let editingId = null;
+
+        // --- Data Injection Point ---
+        // This array is managed by Veo
+        const initialData = [
+            { id: 1, title: "Initialize Kanban Pro", desc: "Setting up the advanced dashboard with local storage and detailed views.", status: "done", priority: "high", created: "2026-02-07 15:10" },
+            { id: 2, title: "Build VeoClaw Landing Page", desc: "First draft of the business distribution site.", status: "done", priority: "high", created: "2026-02-07 14:00" },
+            { id: 3, title: "Standardize Auth Management", desc: "Organizing tokens and profile security for scaling.", status: "todo", priority: "medium", created: "2026-02-07 14:05" },
+            { id: 4, title: "Configure Sub-Agent Delegation", desc: "Setting up isolated workers for multi-tasking.", status: "inprogress", priority: "high", created: "2026-02-07 14:30" },
+            { id: 5, title: "Create Business Plan Document", desc: "Drafting the full strategic roadmap for VeoClaw scale-up.", status: "inprogress", priority: "high", created: "2026-02-07 15:15" }
+        ];
+
+        function render() {
+            ['todo', 'inprogress', 'done'].forEach(col => {
+                const el = document.getElementById(col);
+                el.innerHTML = '';
+                const colTasks = initialData.filter(t => t.status === col);
+                document.getElementById(`${col}-count`).innerText = colTasks.length;
+                
+                colTasks.forEach(task => {
+                    const card = document.createElement('div');
+                    card.className = 'card bg-slate-900 border border-slate-800 p-4 rounded-xl shadow-lg';
+                    card.draggable = true;
+                    card.id = `task-${task.id}`;
+                    card.ondragstart = drag;
+                    card.onclick = () => openEdit(task.id);
+                    
+                    const priorityColors = { high: 'bg-red-500', medium: 'bg-yellow-500', low: 'bg-blue-500' };
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">${task.created}</span>
+                            <span class="w-1.5 h-1.5 rounded-full ${priorityColors[task.priority]} shadow-[0_0_8px_rgba(255,255,255,0.2)]"></span>
+                        </div>
+                        <h3 class="font-bold text-slate-100 leading-tight">${task.title}</h3>
+                        <p class="text-xs text-slate-400 mt-2 line-clamp-2">${task.desc}</p>
+                    `;
+                    el.appendChild(card);
+                });
+            });
         }
 
-        function drag(ev) {
-            ev.dataTransfer.setData("text", ev.target.id);
-        }
-
+        function allowDrop(ev) { ev.preventDefault(); }
+        function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
         function drop(ev) {
             ev.preventDefault();
-            var data = ev.dataTransfer.getData("text");
-            var column = ev.target;
-            while(column && !column.classList.contains('column')) {
-                column = column.parentElement;
-            }
-            if (column) {
-                column.appendChild(document.getElementById(data));
+            const data = ev.dataTransfer.getData("text");
+            const id = parseInt(data.replace('task-', ''));
+            const col = ev.currentTarget.id;
+            const task = initialData.find(t => t.id === id);
+            if(task) {
+                task.status = col;
+                render();
+                console.log(`TASK_UPDATE:${JSON.stringify(task)}`);
             }
         }
+
+        function openModal() {
+            editingId = null;
+            document.getElementById('modalTitle').innerText = 'Create New Task';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDesc').value = '';
+            document.getElementById('taskPriority').value = 'medium';
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        function openEdit(id) {
+            const task = initialData.find(t => t.id === id);
+            if(!task) return;
+            editingId = id;
+            document.getElementById('modalTitle').innerText = 'Edit Task Details';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDesc').value = task.desc;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        function closeModal() { document.getElementById('taskModal').classList.remove('active'); }
+
+        function saveTask() {
+            // In this version, saving simply alerts the user - Veo handles real data persistence via the file
+            alert("To save changes permanently, please inform Veo via chat! 💫");
+            closeModal();
+        }
+
+        render();
     </script>
 </body>
 </html>
