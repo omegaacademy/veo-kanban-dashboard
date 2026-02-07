@@ -27,10 +27,6 @@
                 To Do
             </h2>
             <div id="todo" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-1">
-                    <p class="text-sm font-bold">Build VeoClaw Landing Page</p>
-                    <div class="mt-2 text-xs text-blue-400">High Priority</div>
-                </div>
                 <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-2">
                     <p class="text-sm font-bold">Standardize Auth Profile Management</p>
                     <div class="mt-2 text-xs text-slate-400">Technical Debt</div>
@@ -45,7 +41,10 @@
                 In Progress
             </h2>
             <div id="inprogress" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <!-- Cards will go here -->
+                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-1">
+                    <p class="text-sm font-bold">Build VeoClaw Landing Page</p>
+                    <div class="mt-2 text-xs text-blue-400">In Progress - Draft 1</div>
+                </div>
             </div>
         </div>
 
