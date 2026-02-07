@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veo Kanban Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .column { min-height: 200px; }
+        .card { cursor: grab; }
+        .card:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 font-sans">
+    <header class="mb-8 flex justify-between items-center">
+        <h1 class="text-2xl font-bold tracking-tight">Veo Kanban 💫</h1>
+        <button id="addTask" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg text-sm font-semibold transition-all">
+            + New Task
+        </button>
+    </header>
+
+    <main class="flex flex-col md:flex-row gap-6 overflow-x-auto pb-8">
+        <!-- To Do -->
+        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+                To Do
+            </h2>
+            <div id="todo" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Cards will go here -->
+            </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                In Progress
+            </h2>
+            <div id="inprogress" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Cards will go here -->
+            </div>
+        </div>
+
+        <!-- Done -->
+        <div class="flex-1 min-w-[300px] bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                Done
+            </h2>
+            <div id="done" class="column space-y-3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="card bg-slate-700 p-4 rounded-lg border border-slate-600 shadow-sm" draggable="true" ondragstart="drag(event)" id="task-0">
+                    <p class="text-sm">Initialize Kanban Dashboard</p>
+                    <div class="mt-2 text-xs text-slate-400">Done</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            var column = ev.target;
+            while(column && !column.classList.contains('column')) {
+                column = column.parentElement;
+            }
+            if (column) {
+                column.appendChild(document.getElementById(data));
+            }
+        }
+    </script>
+</body>
+</html>
